@@ -80,7 +80,8 @@ idkeyword.addEventListener("input", function (event) {
 
 // Hàm hiển thị gợi ý danh sách sản phẩm
 function displayProductSuggestions(products) {
-  const searchForm = document.querySelector(".search");
+  const searchForm =
+    document.querySelector(".search") || document.querySelector(".search-grid");
   searchForm.classList.add("relative");
 
   const input = searchForm.querySelector("#keyword"); // Lấy input trong form
