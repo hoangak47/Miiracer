@@ -1,7 +1,10 @@
 let debounceTimeout;
 const url_ = window.location.origin;
 
-document.getElementById("keyword").addEventListener("input", function (event) {
+const idkeyword =
+  document.getElementById("keyword") || document.getElementById("keyword-res");
+
+idkeyword.addEventListener("input", function (event) {
   clearTimeout(debounceTimeout); // Xóa bộ đếm trước đó nếu người dùng nhập liên tục
 
   debounceTimeout = setTimeout(function () {
