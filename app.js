@@ -5,10 +5,12 @@ const idkeyword =
   document.getElementById("keyword") || document.getElementById("keyword-res");
 
 idkeyword.addEventListener("input", function (event) {
+  const currentEvent = event;
   clearTimeout(debounceTimeout); // Xóa bộ đếm trước đó nếu người dùng nhập liên tục
 
   debounceTimeout = setTimeout(function () {
-    const keyword = event.target.value.trim();
+    const keyword = currentEvent.target.value.trim();
+
     if (keyword) {
       // Tạo URL với từ khóa
       const url = `${url_}/tim-kiem?keyword=${encodeURIComponent(keyword)}`;
@@ -59,7 +61,6 @@ idkeyword.addEventListener("input", function (event) {
           });
 
           // Gọi hàm hiển thị gợi ý danh sách sản phẩm
-          console.log(products);
           displayProductSuggestions(products);
         })
         .catch((error) => {
@@ -77,24 +78,24 @@ function displayProductSuggestions(products) {
     document.querySelector(".search") || document.querySelector(".search-grid");
   searchForm.classList.add("relative");
 
-  const input = searchForm.querySelector("#keyword"); // Lấy input trong form
+  const input =
+    searchForm.querySelector("#keyword") ||
+    searchForm.querySelector("#keyword-res"); // Lấy input trong form
 
   // Tạo container cho gợi ý nếu chưa có
   let suggestionsContainer = searchForm.querySelector("#suggestions-container");
 
-  console.log(suggestionsContainer);
   if (!suggestionsContainer) {
     suggestionsContainer = document.createElement("div");
     suggestionsContainer.id = "suggestions-container";
     suggestionsContainer.style.position = "absolute";
 
     // Xác định vị trí bên dưới input
-    const inputRect = input.getBoundingClientRect();
     suggestionsContainer.style.top = `${
       input.offsetTop + input.offsetHeight
     }px`;
-    suggestionsContainer.style.left = `${input.offsetLeft}px`;
-    suggestionsContainer.style.width = `${input.offsetWidth}px`;
+    // suggestionsContainer.style.left = `${input.offsetLeft}px`;
+    suggestionsContainer.style.width = `100%`;
 
     suggestionsContainer.style.maxHeight = "300px";
     suggestionsContainer.style.overflowY = "auto";
@@ -175,172 +176,7 @@ function clearSuggestions() {
   }
 }
 
-document
-  .getElementById("keyword-res")
-  .addEventListener("input", function (event) {
-    clearTimeout(debounceTimeout); // Xóa bộ đếm trước đó nếu người dùng nhập liên tục
-
-    debounceTimeout = setTimeout(function () {
-      const keyword = event.target.value.trim();
-      if (keyword) {
-        // Tạo URL với từ khóa
-        const url = `${url_}/tim-kiem?keyword=${encodeURIComponent(keyword)}`;
-
-        // Gửi yêu cầu fetch
-        fetch(url)
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.text(); // Trả về mã HTML dạng text
-          })
-          .then((html) => {
-            // Parse HTML response thành DOM
-            // const parser = new DOMParser();
-            // const doc = parser.parseFromString(html, "text/html");
-
-            const products = [];
-            const productItems = document.querySelectorAll(".product");
-
-            productItems.forEach((item) => {
-              const productName = item.querySelector(".product-name a")
-                ? item.querySelector(".product-name a").textContent.trim()
-                : null;
-
-              const productPrice = item.querySelector(".price-new-m")
-                ? item.querySelector(".price-new-m").textContent.trim()
-                : null;
-
-              const productImage = item.querySelector("picture img")
-                ? item.querySelector("picture img").getAttribute("src")
-                : null;
-
-              console.log(productImage);
-              const productUrl = item.querySelector(".product-name a")
-                ? item.querySelector(".product-name a").getAttribute("href")
-                : null;
-
-              // Kiểm tra nếu không có data-src, sử dụng hình ảnh thay thế
-              const finalImage =
-                productImage ||
-                `${url_}/thumbs/400x400x2/assets/images/noimage.webp.webp`;
-
-              console.log(productName, productPrice, finalImage, productUrl);
-
-              // Kiểm tra và thêm sản phẩm vào mảng nếu tất cả giá trị hợp lệ
-              if (productName && productPrice && finalImage && productUrl) {
-                products.push({
-                  name: productName,
-                  price: productPrice,
-                  image: finalImage, // Sử dụng hình ảnh thay thế nếu không có data-src
-                  url: productUrl, // Thêm URL vào mảng
-                });
-              }
-            });
-
-            // Gọi hàm hiển thị gợi ý danh sách sản phẩm
-            displayProductSuggestionsa(products);
-          })
-          .catch((error) => {
-            console.error("Error fetching data:", error); // Xử lý lỗi
-          });
-      } else {
-        clearSuggestions(); // Nếu không có từ khóa, xóa danh sách gợi ý
-      }
-    }, 600); // Chờ 0.6 giây trước khi thực thi
-  });
-
 // Hàm hiển thị gợi ý danh sách sản phẩm
-function displayProductSuggestionsa(products) {
-  const searchForm = document.querySelector(".search-grid");
-  searchForm.classList.add("relative");
-
-  const input = searchForm.querySelector("#keyword-res"); // Lấy input trong form
-
-  // Tạo container cho gợi ý nếu chưa có
-  let suggestionsContainer = searchForm.querySelector("#suggestions-container");
-  if (!suggestionsContainer) {
-    suggestionsContainer = document.createElement("div");
-    suggestionsContainer.id = "suggestions-container";
-    suggestionsContainer.style.position = "absolute";
-
-    // Xác định vị trí bên dưới input
-    suggestionsContainer.style.top = `${
-      input.offsetTop + input.offsetHeight
-    }px`;
-    suggestionsContainer.style.width = `100%`;
-
-    suggestionsContainer.style.maxHeight = "300px";
-    suggestionsContainer.style.overflowY = "auto";
-    suggestionsContainer.style.backgroundColor = "white";
-    suggestionsContainer.style.border = "1px solid #ccc";
-    suggestionsContainer.style.zIndex = "999";
-    suggestionsContainer.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
-    searchForm.appendChild(suggestionsContainer);
-  }
-
-  suggestionsContainer.innerHTML = ""; // Xóa tất cả gợi ý cũ
-
-  // Duyệt qua danh sách sản phẩm và tạo các mục gợi ý
-  products.forEach((product) => {
-    const suggestionItem = document.createElement("div");
-    suggestionItem.style.display = "flex";
-    suggestionItem.style.padding = "10px";
-    suggestionItem.style.cursor = "pointer";
-    suggestionItem.style.borderBottom = "1px solid #ddd";
-    suggestionItem.style.transition = "background-color 0.3s";
-
-    suggestionItem.addEventListener("mouseenter", () => {
-      suggestionItem.style.backgroundColor = "#f0f0f0"; // Đổi màu khi hover
-    });
-    suggestionItem.addEventListener("mouseleave", () => {
-      suggestionItem.style.backgroundColor = ""; // Khôi phục màu khi rời chuột
-    });
-
-    const productImage = document.createElement("img");
-    productImage.src = product.image;
-    productImage.alt = product.name;
-    productImage.style.width = "50px";
-    productImage.style.height = "50px";
-    productImage.style.marginRight = "10px";
-    productImage.style.objectFit = "cover"; // Đảm bảo hình ảnh luôn đầy đủ
-
-    const productInfo = document.createElement("div");
-    productInfo.style.display = "flex";
-    productInfo.style.flexDirection = "column";
-
-    const productName = document.createElement("div");
-    productName.textContent = product.name;
-    productName.style.fontWeight = "bold";
-    productName.style.marginBottom = "5px";
-
-    const productPrice = document.createElement("div");
-    productPrice.textContent = product.price;
-    productPrice.style.color = "#E2071A";
-    productPrice.style.fontSize = "14px";
-
-    productInfo.appendChild(productName);
-    productInfo.appendChild(productPrice);
-
-    suggestionItem.appendChild(productImage);
-    suggestionItem.appendChild(productInfo);
-
-    // Thêm sự kiện khi nhấp vào một gợi ý
-    suggestionItem.addEventListener("click", () => {
-      window.location.href = product.url; // Chuyển hướng đến URL sản phẩm
-    });
-
-    suggestionsContainer.appendChild(suggestionItem);
-  });
-
-  document.addEventListener("click", (event) => {
-    if (!searchForm.contains(event.target)) {
-      clearSuggestions();
-      document.getElementById("keyword-res").value = "";
-    }
-  });
-}
-
 document.querySelectorAll(".search-res, .search-grid").forEach((element) => {
   element.style.overflow = "unset";
 });
