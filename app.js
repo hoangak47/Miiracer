@@ -25,49 +25,42 @@ idkeyword.addEventListener("input", function (event) {
           // Parse HTML response thành DOM
           const parser = new DOMParser();
           const doc = parser.parseFromString(html, "text/html");
+          const products = [];
+          const productItems = doc.querySelectorAll(".product");
 
-          // Lấy các sản phẩm từ thẻ có class "flex-product-main"
-          const flexProductMain = doc.querySelector(".grid-product");
-          if (flexProductMain) {
-            const products = [];
-            const productItems = flexProductMain.querySelectorAll(".product");
+          productItems.forEach((item) => {
+            const productName = item.querySelector(".product-name a")
+              ? item.querySelector(".product-name a").textContent.trim()
+              : null;
+            const productPrice = item.querySelector(".price-new-m")
+              ? item.querySelector(".price-new-m").textContent.trim()
+              : null;
+            const productImage = item.querySelector("picture source")
+              ? item.querySelector("picture source").getAttribute("srcset")
+              : null;
+            const productUrl = item.querySelector(".position-relative")
+              ? item.querySelector(".position-relative").getAttribute("href")
+              : null;
 
-            productItems.forEach((item) => {
-              const productName = item.querySelector(".product-name a")
-                ? item.querySelector(".product-name a").textContent.trim()
-                : null;
-              const productPrice = item.querySelector(".price-new-m")
-                ? item.querySelector(".price-new-m").textContent.trim()
-                : null;
-              const productImage = item.querySelector("picture source")
-                ? item.querySelector("picture source").getAttribute("srcset")
-                : null;
-              const productUrl = item.querySelector(".position-relative")
-                ? item.querySelector(".position-relative").getAttribute("href")
-                : null;
+            // Kiểm tra nếu không có data-src, sử dụng hình ảnh thay thế
+            const finalImage =
+              productImage ||
+              `${url_}/thumbs/400x400x2/assets/images/noimage.webp.webp`;
 
-              // Kiểm tra nếu không có data-src, sử dụng hình ảnh thay thế
-              const finalImage =
-                productImage ||
-                `${url_}/thumbs/400x400x2/assets/images/noimage.webp.webp`;
+            // Kiểm tra và thêm sản phẩm vào mảng nếu tất cả giá trị hợp lệ
+            if (productName && productPrice && finalImage && productUrl) {
+              products.push({
+                name: productName,
+                price: productPrice,
+                image: finalImage, // Sử dụng hình ảnh thay thế nếu không có data-src
+                url: productUrl, // Thêm URL vào mảng
+              });
+            }
+          });
 
-              // Kiểm tra và thêm sản phẩm vào mảng nếu tất cả giá trị hợp lệ
-              if (productName && productPrice && finalImage && productUrl) {
-                products.push({
-                  name: productName,
-                  price: productPrice,
-                  image: finalImage, // Sử dụng hình ảnh thay thế nếu không có data-src
-                  url: productUrl, // Thêm URL vào mảng
-                });
-              }
-            });
-
-            // Gọi hàm hiển thị gợi ý danh sách sản phẩm
-            console.log(products);
-            displayProductSuggestions(products);
-          } else {
-            console.warn('Không tìm thấy thẻ có class "flex-product-main".');
-          }
+          // Gọi hàm hiển thị gợi ý danh sách sản phẩm
+          console.log(products);
+          displayProductSuggestions(products);
         })
         .catch((error) => {
           console.error("Error fetching data:", error); // Xử lý lỗi
@@ -88,6 +81,8 @@ function displayProductSuggestions(products) {
 
   // Tạo container cho gợi ý nếu chưa có
   let suggestionsContainer = searchForm.querySelector("#suggestions-container");
+
+  console.log(suggestionsContainer);
   if (!suggestionsContainer) {
     suggestionsContainer = document.createElement("div");
     suggestionsContainer.id = "suggestions-container";
@@ -201,53 +196,50 @@ document
           })
           .then((html) => {
             // Parse HTML response thành DOM
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
+            // const parser = new DOMParser();
+            // const doc = parser.parseFromString(html, "text/html");
 
-            // Lấy các sản phẩm từ thẻ có class "flex-product-main"
-            const flexProductMain = doc.querySelector(".flex-product-main");
-            if (flexProductMain) {
-              const products = [];
-              const productItems =
-                flexProductMain.querySelectorAll(".product-item");
+            const products = [];
+            const productItems = document.querySelectorAll(".product");
 
-              productItems.forEach((item) => {
-                const productName = item.querySelector(".product-name a")
-                  ? item.querySelector(".product-name a").textContent.trim()
-                  : null;
-                const productPrice = item.querySelector(".price-new")
-                  ? item.querySelector(".price-new").textContent.trim()
-                  : null;
-                const productImage = item.querySelector(".product-photo img")
-                  ? item
-                      .querySelector(".product-photo img")
-                      .getAttribute("data-src")
-                  : null;
-                const productUrl = item.querySelector(".product-name a")
-                  ? item.querySelector(".product-name a").getAttribute("href")
-                  : null;
+            productItems.forEach((item) => {
+              const productName = item.querySelector(".product-name a")
+                ? item.querySelector(".product-name a").textContent.trim()
+                : null;
 
-                // Kiểm tra nếu không có data-src, sử dụng hình ảnh thay thế
-                const finalImage =
-                  productImage ||
-                  `${url_}/thumbs/400x400x2/assets/images/noimage.webp.webp`;
+              const productPrice = item.querySelector(".price-new-m")
+                ? item.querySelector(".price-new-m").textContent.trim()
+                : null;
 
-                // Kiểm tra và thêm sản phẩm vào mảng nếu tất cả giá trị hợp lệ
-                if (productName && productPrice && finalImage && productUrl) {
-                  products.push({
-                    name: productName,
-                    price: productPrice,
-                    image: finalImage, // Sử dụng hình ảnh thay thế nếu không có data-src
-                    url: productUrl, // Thêm URL vào mảng
-                  });
-                }
-              });
+              const productImage = item.querySelector("picture img")
+                ? item.querySelector("picture img").getAttribute("src")
+                : null;
 
-              // Gọi hàm hiển thị gợi ý danh sách sản phẩm
-              displayProductSuggestionsa(products);
-            } else {
-              console.warn('Không tìm thấy thẻ có class "flex-product-main".');
-            }
+              console.log(productImage);
+              const productUrl = item.querySelector(".product-name a")
+                ? item.querySelector(".product-name a").getAttribute("href")
+                : null;
+
+              // Kiểm tra nếu không có data-src, sử dụng hình ảnh thay thế
+              const finalImage =
+                productImage ||
+                `${url_}/thumbs/400x400x2/assets/images/noimage.webp.webp`;
+
+              console.log(productName, productPrice, finalImage, productUrl);
+
+              // Kiểm tra và thêm sản phẩm vào mảng nếu tất cả giá trị hợp lệ
+              if (productName && productPrice && finalImage && productUrl) {
+                products.push({
+                  name: productName,
+                  price: productPrice,
+                  image: finalImage, // Sử dụng hình ảnh thay thế nếu không có data-src
+                  url: productUrl, // Thêm URL vào mảng
+                });
+              }
+            });
+
+            // Gọi hàm hiển thị gợi ý danh sách sản phẩm
+            displayProductSuggestionsa(products);
           })
           .catch((error) => {
             console.error("Error fetching data:", error); // Xử lý lỗi
@@ -260,7 +252,7 @@ document
 
 // Hàm hiển thị gợi ý danh sách sản phẩm
 function displayProductSuggestionsa(products) {
-  const searchForm = document.querySelector("form.search-grid");
+  const searchForm = document.querySelector(".search-grid");
   searchForm.classList.add("relative");
 
   const input = searchForm.querySelector("#keyword-res"); // Lấy input trong form
@@ -273,11 +265,9 @@ function displayProductSuggestionsa(products) {
     suggestionsContainer.style.position = "absolute";
 
     // Xác định vị trí bên dưới input
-    const inputRect = input.getBoundingClientRect();
     suggestionsContainer.style.top = `${
       input.offsetTop + input.offsetHeight
     }px`;
-    suggestionsContainer.style.left = `${input.offsetLeft}px`;
     suggestionsContainer.style.width = `100%`;
 
     suggestionsContainer.style.maxHeight = "300px";
@@ -391,10 +381,6 @@ if (menuRes) {
       menuRes.style.boxShadow = "none";
     }
   });
-}
-const gioiThieu = document.querySelector(".gioithieu-m");
-if (gioiThieu) {
-  gioiThieu.style.overflow = "hidden";
 }
 
 const activeSpan = document.querySelector(".tab-pro span.active");
