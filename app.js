@@ -316,7 +316,7 @@ function displayProductSuggestionsa(products) {
 
     const productPrice = document.createElement("div");
     productPrice.textContent = product.price;
-    productPrice.style.color = "green";
+    productPrice.style.color = "#E2071A";
     productPrice.style.fontSize = "14px";
 
     productInfo.appendChild(productName);
