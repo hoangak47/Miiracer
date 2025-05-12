@@ -82,7 +82,9 @@ function displayProductSuggestions(products) {
     searchForm.querySelector("#keyword") ||
     searchForm.querySelector("#keyword-res"); // Lấy input trong form
 
+  console.log(input);
   input.style.borderRadius = "0 50px 50px 0";
+  console.log(input.style.borderRadius);
   // Tạo container cho gợi ý nếu chưa có
   let suggestionsContainer = searchForm.querySelector("#suggestions-container");
 
