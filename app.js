@@ -4,6 +4,8 @@ const url_ = window.location.origin;
 const idkeyword =
   document.getElementById("keyword") || document.getElementById("keyword-res");
 
+idkeyword.style.borderRadius = "0 50px 50px 0";
+
 idkeyword.addEventListener("input", function (event) {
   const currentEvent = event;
   clearTimeout(debounceTimeout); // Xóa bộ đếm trước đó nếu người dùng nhập liên tục
@@ -82,9 +84,6 @@ function displayProductSuggestions(products) {
     searchForm.querySelector("#keyword") ||
     searchForm.querySelector("#keyword-res"); // Lấy input trong form
 
-  console.log(input);
-  input.style.borderRadius = "0 50px 50px 0";
-  console.log(input.style.borderRadius);
   // Tạo container cho gợi ý nếu chưa có
   let suggestionsContainer = searchForm.querySelector("#suggestions-container");
 
