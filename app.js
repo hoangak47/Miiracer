@@ -82,6 +82,7 @@ function displayProductSuggestions(products) {
     searchForm.querySelector("#keyword") ||
     searchForm.querySelector("#keyword-res"); // Lấy input trong form
 
+  input.style.borderRadius = "0 50px 50px 0";
   // Tạo container cho gợi ý nếu chưa có
   let suggestionsContainer = searchForm.querySelector("#suggestions-container");
 
@@ -178,7 +179,7 @@ function clearSuggestions() {
 
 // Hàm hiển thị gợi ý danh sách sản phẩm
 document.querySelectorAll(".search-res, .search-grid").forEach((element) => {
-  element.style.overflowY = "unset";
+  element.style.overflow = "unset";
 });
 
 // Hàm xóa tất cả gợi ý khi không có kết quả hoặc người dùng xóa từ khóa
