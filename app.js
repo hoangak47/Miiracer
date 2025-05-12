@@ -5,6 +5,7 @@ const idkeyword =
   document.getElementById("keyword") || document.getElementById("keyword-res");
 
 idkeyword.style.borderRadius = "0 50px 50px 0";
+idkeyword.style.lineHeight = "1rem";
 
 idkeyword.addEventListener("input", function (event) {
   const currentEvent = event;
