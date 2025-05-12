@@ -178,7 +178,7 @@ function clearSuggestions() {
 
 // Hàm hiển thị gợi ý danh sách sản phẩm
 document.querySelectorAll(".search-res, .search-grid").forEach((element) => {
-  element.style.overflow = "unset";
+  element.style.overflowY = "unset";
 });
 
 // Hàm xóa tất cả gợi ý khi không có kết quả hoặc người dùng xóa từ khóa
