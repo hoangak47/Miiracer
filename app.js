@@ -4,6 +4,9 @@ const url_ = window.location.origin;
 const idkeyword =
   document.getElementById("keyword") || document.getElementById("keyword-res");
 
+if (!idkeyword) {
+}
+
 idkeyword.style.borderRadius = "50px";
 
 idkeyword.addEventListener("input", function (event) {
