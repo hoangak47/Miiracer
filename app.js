@@ -5,6 +5,9 @@ const idkeyword =
   document.getElementById("keyword") || document.getElementById("keyword-res");
 
 if (!idkeyword) {
+  console.warn("Không tìm thấy phần tử với id 'keyword' hoặc 'keyword-res'.");
+  // Hoặc thực hiện hành động nào đó
+  return;
 }
 
 idkeyword.style.borderRadius = "50px";
